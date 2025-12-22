@@ -8,18 +8,20 @@ memory-efficient pagination.
 # To run the application
 ./gradlew bootRun
 ```
+Transactions maximum decimal precision is configurable via application property `ledger.max-precision`.
 
 
 ## Key Features
-* Ability to record money movements (ie: deposits and withdrawals)
+* Ability to record money movements (ie: deposits and withdrawals), including funds check
 * View current balance
-* View transaction history
+* View transaction history, including a rolling balance
 
 ## 🚀 Implementation details
 
 * **Atomic Transactions:** Uses `ConcurrentHashMap` and `compute` blocks to ensure balance integrity and prevent race conditions without heavy locking.
 * **Memory Efficiency:** Implements lazy pagination using Kotlin `Sequences` to handle accounts with millions of transactions with constant memory overhead.
 * **LIFO Journaling:** Optimized for storing transactions in a `ConcurrentLinkedDeque` for $O(1)$ newest-first retrieval.
+* **Lock-Free Concurrency:** Leverages `ConcurrentLinkedDeque` for non-blocking transaction inserts, ensuring that read operations for history don't block new money movements.
 
 ---
 
@@ -37,8 +39,8 @@ memory-efficient pagination.
 ---
 
 ## 📖 API Reference
-
 The API is versioned under `/v1` and follows RESTful principles.
+📍 `src/main/resources/static/openapi.yaml`
 
 Swagger endpoint with full documentation:
 `/swagger-ui/index.html`

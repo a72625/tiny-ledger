@@ -1,5 +1,6 @@
-package com.example.tiny_ledger.domain.data
+package com.example.tiny_ledger.domain.repository
 
+import com.example.tiny_ledger.domain.data.LedgerRepository
 import com.example.tiny_ledger.domain.exception.InsufficientFundsException
 import com.example.tiny_ledger.domain.model.AccountId
 import com.example.tiny_ledger.domain.model.Pageable
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
-import java.util.*
+import java.util.UUID
 
 class LedgerRepositoryTest {
 

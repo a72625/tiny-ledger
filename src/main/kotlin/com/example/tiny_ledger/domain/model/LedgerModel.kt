@@ -4,7 +4,6 @@ import java.math.BigDecimal
 import java.time.OffsetDateTime
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedDeque
-import java.util.concurrent.ConcurrentLinkedQueue
 
 @JvmInline
 value class AccountId(val id: UUID){
@@ -16,11 +15,6 @@ data class Transaction(
     val description: String?,
     val amount: BigDecimal,
     val balance: BigDecimal
-)
-
-data class Transactions(
-    val transactions: List<Transaction>,
-    val size: Int
 )
 
 data class Ledger(

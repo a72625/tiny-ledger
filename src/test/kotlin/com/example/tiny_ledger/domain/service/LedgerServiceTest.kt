@@ -16,7 +16,7 @@ import kotlin.collections.emptyList
 class LedgerServiceTest {
 
     private val repository: LedgerRepository = mock()
-    private val service = LedgerService(repository)
+    private val service = LedgerService(repository, 4)
 
     @Test
     fun `openAccount should generate UUID and call repository`() {
