@@ -27,9 +27,6 @@ import java.util.UUID
 @RestController
 @RequestMapping("/v1/accounts")
 class AccountController(private val service: LedgerService) {
-    companion object {
-        const val MAXIMUM_PRECISION = 8
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
