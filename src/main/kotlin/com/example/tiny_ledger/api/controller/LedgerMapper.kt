@@ -1,9 +1,11 @@
 package com.example.tiny_ledger.api.controller
 
+import com.example.api.dto.Currency
 import com.example.api.dto.PageSort
 import com.example.api.dto.Transaction
 import com.example.api.dto.TransactionsResponse
 import com.example.tiny_ledger.domain.model.Sort
+import com.example.tiny_ledger.domain.model.Currency as DomainCurrency
 import com.example.tiny_ledger.domain.model.Transaction as DomainTransaction
 import com.example.tiny_ledger.domain.model.TransactionsResponse as DomainTransactionResponse
 
@@ -32,6 +34,15 @@ class LedgerMapper {
             return when (this) {
                 PageSort.ASC -> Sort.ASC
                 PageSort.DESC -> Sort.DESC
+            }
+        }
+
+        fun Currency.toDomainCurrency(): DomainCurrency {
+            return when (this) {
+                Currency.EUR -> DomainCurrency.EUR
+                Currency.USD -> DomainCurrency.USD
+                Currency.GBP -> DomainCurrency.GBP
+                Currency.JPY -> DomainCurrency.JPY
             }
         }
     }

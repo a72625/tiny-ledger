@@ -1,10 +1,12 @@
 package com.example.tiny_ledger.api.controller
 
 import com.example.api.dto.AccountResponse
+import com.example.api.dto.AccountOpeningRequest
 import com.example.api.dto.BalanceResponse
 import com.example.api.dto.MoneyMovement
 import com.example.api.dto.PageSort
 import com.example.api.dto.TransactionsResponse
+import com.example.tiny_ledger.api.controller.LedgerMapper.Companion.toDomainCurrency
 import com.example.tiny_ledger.api.controller.LedgerMapper.Companion.toSort
 import com.example.tiny_ledger.api.controller.LedgerMapper.Companion.toTransactionsResponse
 import com.example.tiny_ledger.domain.model.AccountId
@@ -30,8 +32,8 @@ class AccountController(private val service: LedgerService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun openAccount(): AccountResponse {
-        return AccountResponse(service.openAccount().id)
+    fun openAccount(@Valid @RequestBody request: AccountOpeningRequest): AccountResponse {
+        return AccountResponse(service.openAccount(request.currency.toDomainCurrency()).id)
     }
 
     @GetMapping("/{accountId}/balances")

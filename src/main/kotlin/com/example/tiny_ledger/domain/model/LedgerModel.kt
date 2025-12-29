@@ -10,6 +10,13 @@ value class AccountId(val id: UUID){
     override fun toString(): String = id.toString()
 }
 
+enum class Currency {
+    EUR,
+    USD,
+    JPY,
+    GBP
+}
+
 data class Transaction(
     val dateTime: OffsetDateTime,
     val description: String?,
@@ -18,6 +25,7 @@ data class Transaction(
 )
 
 data class Ledger(
+    val currency: Currency,
     val balance: BigDecimal,
     val transactions: ConcurrentLinkedDeque<Transaction>,
     val transactionsSize: Int

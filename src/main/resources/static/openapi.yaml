@@ -11,11 +11,10 @@ paths:
     post:
       summary: Open an account
       requestBody:
-        required: false
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/AccountOpeningRequest'
       responses:
         '201':
           description: Account open accepted
@@ -136,6 +135,17 @@ components:
     PageSort:
       type: string
       enum: [ ASC, DESC ]
+    Currency:
+      type: string
+      enum: [ EUR, USD, GBP, JPY ]
+
+    AccountOpeningRequest:
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+            $ref: '#/components/schemas/Currency'
 
     AccountResponse:
       type: object
@@ -176,6 +186,7 @@ components:
           type: integer
           minimum: 1
           nullable: true
+
 
     Transaction:
       type: object
