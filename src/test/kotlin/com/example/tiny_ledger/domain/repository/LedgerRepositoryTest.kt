@@ -3,6 +3,7 @@ package com.example.tiny_ledger.domain.repository
 import com.example.tiny_ledger.domain.data.LedgerRepository
 import com.example.tiny_ledger.domain.exception.InsufficientFundsException
 import com.example.tiny_ledger.domain.model.AccountId
+import com.example.tiny_ledger.domain.model.Currency
 import com.example.tiny_ledger.domain.model.Pageable
 import com.example.tiny_ledger.domain.model.Sort
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -22,7 +23,7 @@ class LedgerRepositoryTest {
     @BeforeEach
     fun setup() {
         repository = LedgerRepository()
-        repository.openAccount(accountId)
+        repository.openAccount(accountId, Currency.EUR)
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.example.tiny_ledger.api.controller
 
 import com.example.api.dto.ErrorResponse
+import com.example.tiny_ledger.domain.exception.AccountNotFoundException
 import com.example.tiny_ledger.domain.exception.InsufficientFundsException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class ApiExceptionHandler {
-    @ExceptionHandler(NoSuchElementException::class)
-    fun handleNotFound(e: NoSuchElementException): ResponseEntity<ErrorResponse> {
+    @ExceptionHandler(AccountNotFoundException::class)
+    fun handleNotFound(e: AccountNotFoundException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ErrorResponse("Account not found"))
     }

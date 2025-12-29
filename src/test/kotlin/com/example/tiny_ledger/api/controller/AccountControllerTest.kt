@@ -2,14 +2,13 @@ package com.example.tiny_ledger.api.controller
 
 import com.example.tiny_ledger.domain.exception.InsufficientFundsException
 import com.example.tiny_ledger.domain.model.AccountId
+import com.example.tiny_ledger.domain.model.Currency
 import com.example.tiny_ledger.domain.model.TransactionsResponse as DomainTransactionsResponse
 import com.example.tiny_ledger.domain.service.LedgerService
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doThrow
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
@@ -34,10 +33,15 @@ class AccountControllerTest {
     @Test
     fun `should return 201 when opening account`() {
         val newId = UUID.randomUUID()
-        whenever(service.openAccount()).thenReturn(AccountId(newId))
+        whenever(service.openAccount(Currency.EUR)).thenReturn(AccountId(newId))
 
-        mockMvc.perform(post("/v1/accounts"))
-            .andExpect(status().isCreated)
+        val json = """{ "currency": "EUR" }"""
+
+        mockMvc.perform(
+            post("/v1/accounts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        ).andExpect(status().isCreated)
             .andExpect(jsonPath("$.accountId").value(newId.toString()))
     }
 
@@ -117,9 +121,11 @@ class AccountControllerTest {
         val longDescription = "a".repeat(256)
         val json = """{ "amount": 10.0, "description": "$longDescription" }"""
 
-        mockMvc.perform(post("/v1/accounts/$accountId/transactions")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
+        mockMvc.perform(
+            post("/v1/accounts/$accountId/transactions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        )
             .andExpect(status().isBadRequest)
     }
 
@@ -128,9 +134,11 @@ class AccountControllerTest {
         val accountId = UUID.randomUUID()
 
         // Triggers @Min(value = 1) on 'page' parameter
-        mockMvc.perform(get("/v1/accounts/$accountId/transactions")
-            .param("page", "0")
-            .param("size", "10"))
+        mockMvc.perform(
+            get("/v1/accounts/$accountId/transactions")
+                .param("page", "0")
+                .param("size", "10")
+        )
             .andExpect(status().isBadRequest)
     }
 
@@ -139,9 +147,11 @@ class AccountControllerTest {
         val accountId = UUID.randomUUID()
 
         // Triggers @Min(value = 1) on 'size' parameter
-        mockMvc.perform(get("/v1/accounts/$accountId/transactions")
-            .param("page", "1")
-            .param("size", "0"))
+        mockMvc.perform(
+            get("/v1/accounts/$accountId/transactions")
+                .param("page", "1")
+                .param("size", "0")
+        )
             .andExpect(status().isBadRequest)
     }
 }

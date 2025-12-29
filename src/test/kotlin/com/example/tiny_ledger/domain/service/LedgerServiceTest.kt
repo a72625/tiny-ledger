@@ -2,6 +2,7 @@ package com.example.tiny_ledger.domain.service
 
 import com.example.tiny_ledger.domain.data.LedgerRepository
 import com.example.tiny_ledger.domain.model.AccountId
+import com.example.tiny_ledger.domain.model.Currency
 import com.example.tiny_ledger.domain.model.Pageable
 import com.example.tiny_ledger.domain.model.Sort
 import com.example.tiny_ledger.domain.model.TransactionsResponse
@@ -16,16 +17,19 @@ import kotlin.collections.emptyList
 class LedgerServiceTest {
 
     private val repository: LedgerRepository = mock()
-    private val service = LedgerService(repository, 4)
+    private val service = LedgerService(repository, CurrencyConfig(mutableMapOf("EUR" to 2)))
 
     @Test
     fun `openAccount should generate UUID and call repository`() {
-        val result = service.openAccount()
+        val result = service.openAccount(Currency.EUR)
 
         // Verify it's a valid AccountId (UUID)
         assert(result.id is UUID)
         // Verify repository was called exactly once with that ID
-        verify(repository, times(1)).openAccount(result)
+        verify(repository, times(1)).openAccount(
+            result,
+            Currency.EUR
+        )
     }
 
     @Test
@@ -33,7 +37,7 @@ class LedgerServiceTest {
         val accountId = AccountId(UUID.randomUUID())
 
         val exception = assertThrows<IllegalArgumentException> {
-            service.moneyMovement(accountId, BigDecimal("0.000"), "Zero test")
+            service.moneyMovement(accountId, BigDecimal("0.00"), "Zero test")
         }
 
         assertEquals("Amount cannot be zero", exception.message)
@@ -43,6 +47,7 @@ class LedgerServiceTest {
     @Test
     fun `moneyMovement should throw exception when precision is too high`() {
         val accountId = AccountId(UUID.randomUUID())
+        whenever(repository.getAccountCurrency(accountId)).thenReturn(Currency.EUR)
         // Scale is 9, MAXIMUM_PRECISION is 8
         val highPrecisionAmount = BigDecimal("-10.123456789")
 
@@ -51,12 +56,13 @@ class LedgerServiceTest {
         }
 
         assertEquals("Precision too high", exception.message)
-        verifyNoInteractions(repository)
+        verify(repository, times(0)).storeTransaction(any(), any(), any())
     }
 
     @Test
     fun `moneyMovement should call repository when validation passes`() {
         val accountId = AccountId(UUID.randomUUID())
+        whenever(repository.getAccountCurrency(accountId)).thenReturn(Currency.EUR)
         val validAmount = BigDecimal("10.50")
 
         service.moneyMovement(accountId, validAmount, "Valid deposit")
